@@ -1,0 +1,133 @@
+library(ape)
+library(ggplot2)
+library(pheatmap)
+library(patchwork)
+
+aln <- read.dna(
+  "outputs/study_wgs.aln.fasta",
+  format = "fasta"
+)
+
+# tidy names
+new_names <- gsub("/.*", "", labels(aln))
+rownames(aln) <- new_names
+
+# raw p-distance
+d <- dist.dna(
+  aln,
+  model = "raw",
+  pairwise.deletion = TRUE
+)
+
+# mean pairwise distance
+mean_dist <- mean(as.matrix(d)[upper.tri(as.matrix(d))])
+
+# extract distances
+dist_values <- as.vector(d)
+
+## Calculate % identities
+#mean 
+mean_identity <- (1 - mean_dist) * 100
+mean_identity
+#range
+identity_values <- (1 - dist_values) * 100
+summary(identity_values)
+
+# -------------------------
+# Panel A: Histogram
+# -------------------------
+
+p1 <- ggplot(
+  data.frame(distance = dist_values),
+  aes(x = distance)
+) +
+  geom_histogram(
+    bins = 30,
+    colour = "black",
+    fill = "grey80"
+  ) +
+  geom_vline(
+    xintercept = mean_dist,
+    linetype = "dashed",
+    linewidth = 0.8
+  ) +
+  
+  annotate(
+    
+    "text",
+    
+    x = mean_dist,
+    
+    y = Inf,
+    
+    label = paste0("Mean = ", round(mean_dist, 4)),
+    
+    vjust = 1.5,
+    
+    hjust = -0.1,
+    
+    size = 4
+    
+  )+
+  labs(
+    x = "Pairwise p-distance",
+    y = "Number of comparisons"
+  ) +
+  theme_bw(base_size = 12) +
+  theme(
+    axis.title = element_text(size = 14),
+    axis.text = element_text(size = 12),
+    axis.line = element_line(),
+    panel.grid = element_blank()
+  );p1
+
+# -------------------------
+# Panel B: Heatmap
+# -------------------------
+
+ph <- pheatmap(
+  as.matrix(d),
+  cluster_rows = TRUE,
+  cluster_cols = TRUE,
+  show_rownames = TRUE,
+  show_colnames = TRUE,
+  fontsize_row = 12,
+  fontsize_col = 12,
+  border_color = NA,
+  silent = TRUE
+)
+
+p2 <- wrap_elements(ph$gtable);p2
+
+# -------------------------
+# Combine panels
+# -------------------------
+
+
+combined_plot <- p1 + p2 +
+  plot_layout(widths = c(1, 1.5)) +
+  plot_annotation(
+    tag_levels = "A"
+  )
+
+combined_plot
+
+# -------------------------
+# Export
+# -------------------------
+
+ggsave(
+  "outputs/pairwise_distance_figure.pdf",
+  combined_plot,
+  width = 12,
+  height = 6
+)
+
+ggsave(
+  "outputs/pairwise_distance_figure.png",
+  combined_plot,
+  width = 12,
+  height = 6,
+  dpi = 600
+)
+

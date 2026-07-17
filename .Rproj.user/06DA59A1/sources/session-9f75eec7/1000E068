@@ -1,0 +1,27 @@
+{
+    "id": "1000E068",
+    "path": "~/GitHub/RABV-Nigeria/R/create_fig1.R",
+    "project_path": "R/create_fig1.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1783507437222.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "143,13",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1784036176,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1784036176917,
+    "read_only": false,
+    "read_only_alternatives": []
+}
