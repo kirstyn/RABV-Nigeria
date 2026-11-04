@@ -51,7 +51,4 @@ vignettes/*.pdf
 rsconnect/
 
 # Ignore unpublished outputs
-scripts/5_other/
-raw/other/
-processed/other/
-plos-submission/
+journal_submission/
